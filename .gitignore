@@ -39,3 +39,4 @@ tmp/*
 
 # generated code
 *.gen.go
+*.gen.json
