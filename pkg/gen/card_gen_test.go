@@ -51,5 +51,4 @@ func TestGenerateCards(t *testing.T) {
 			}
 		})
 	}
-
 }
