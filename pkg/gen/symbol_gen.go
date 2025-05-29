@@ -2,7 +2,7 @@ package gen
 
 import (
 	"github.com/google/uuid"
-	"github.com/phrkdll/monomatch/pkg/models/symbol"
+	"github.com/phrkdll/monomatch/pkg/symbol"
 )
 
 func MakeSymbols(names []string) []symbol.Symbol {

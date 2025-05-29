@@ -2,7 +2,7 @@ package card
 
 import (
 	"github.com/google/uuid"
-	"github.com/phrkdll/monomatch/pkg/models/symbol"
+	"github.com/phrkdll/monomatch/pkg/symbol"
 	"github.com/phrkdll/strongoid/pkg/strongoid"
 )
 

@@ -3,8 +3,8 @@ package gen
 import (
 	"errors"
 
-	"github.com/phrkdll/monomatch/pkg/models/card"
-	"github.com/phrkdll/monomatch/pkg/models/symbol"
+	"github.com/phrkdll/monomatch/pkg/card"
+	"github.com/phrkdll/monomatch/pkg/symbol"
 )
 
 const n = 7 // Order of the projective plane

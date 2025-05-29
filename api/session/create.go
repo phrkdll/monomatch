@@ -1,20 +1,14 @@
-package api
+package session
 
 import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/phrkdll/monomatch/pkg/models/session"
+	"github.com/phrkdll/monomatch/pkg/session"
+	"github.com/phrkdll/monomatch/pkg/session/store"
 )
 
-func registerSessionRoutes(mux *chi.Mux) {
-	mux.Route("/sessions", func(r chi.Router) {
-		r.Post("/new", createNewSession)
-	})
-}
-
-func createNewSession(w http.ResponseWriter, r *http.Request) {
+func createSession(w http.ResponseWriter, r *http.Request) {
 	var input []string
 
 	err := json.NewDecoder(r.Body).Decode(&input)
@@ -32,6 +26,8 @@ func createNewSession(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
+
+	store.Instance().Add(*session)
 
 	json, err := json.Marshal(&session)
 	if err != nil {

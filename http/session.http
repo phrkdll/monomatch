@@ -1,64 +1,25 @@
 @baseUrl = http://localhost:1982
 
+###
+
 POST {{baseUrl}}/sessions/new
 Content-Type: application/json
 
 [
-  "Metallica",
-  "Iron Maiden",
-  "Slayer",
-  "Megadeth",
-  "Pantera",
-  "Black Sabbath",
-  "Judas Priest",
-  "Lamb of God",
-  "Slipknot",
-  "System of a Down",
-  "Sepultura",
-  "Opeth",
-  "Gojira",
-  "Amon Amarth",
-  "Trivium",
-  "Behemoth",
-  "Nightwish",
-  "Children of Bodom",
-  "Dream Theater",
-  "Anthrax",
-  "Testament",
-  "Kreator",
-  "Overkill",
-  "Machine Head",
-  "In Flames",
-  "Arch Enemy",
-  "Dark Tranquillity",
-  "Dimmu Borgir",
-  "Emperor",
-  "Cradle of Filth",
-  "Cannibal Corpse",
-  "Morbid Angel",
-  "Deicide",
-  "Obituary",
-  "Death",
-  "Carcass",
-  "Napalm Death",
-  "Suffocation",
-  "Amorphis",
-  "Ensiferum",
-  "Eluveitie",
-  "Blind Guardian",
-  "Iced Earth",
-  "HammerFall",
-  "Stratovarius",
-  "Sonata Arctica",
-  "Sabaton",
-  "Manowar",
-  "Venom",
-  "Bathory",
-  "Immortal",
-  "Marduk",
-  "Watain",
-  "Mayhem",
-  "Satyricon",
-  "Enslaved",
-  "Borknagar"
+  "Metallica",  "Iron Maiden",  "Slayer",  "Megadeth",  "Pantera",  "Black Sabbath",  "Judas Priest",  "Lamb of God",  "Slipknot",  "System of a Down",
+  "Sepultura",  "Opeth",  "Gojira",  "Amon Amarth",  "Trivium",  "Behemoth",  "Nightwish",  "Children of Bodom",  "Dream Theater",  "Anthrax",
+  "Testament",  "Kreator",  "Overkill",  "Machine Head",  "In Flames",  "Arch Enemy",  "Dark Tranquillity",  "Dimmu Borgir",  "Emperor",  "Cradle of Filth",
+  "Cannibal Corpse",  "Morbid Angel",  "Deicide",  "Obituary",  "Death",  "Carcass",  "Napalm Death",  "Suffocation",  "Amorphis",  "Ensiferum",
+  "Eluveitie",  "Blind Guardian",  "Iced Earth",  "HammerFall",  "Stratovarius",  "Sonata Arctica",  "Sabaton",  "Manowar",  "Venom",  "Bathory",
+  "Immortal",  "Marduk",  "Watain",  "Mayhem",  "Satyricon",  "Enslaved",  "Borknagar"
 ]
+
+###
+
+POST {{baseUrl}}/sessions/join
+Content-Type: application/json
+
+{
+  "id": "a775f546-ad14-4e49-8a40-d0e1278dc9ef",
+  "playerName": "phreakadelle"
+}

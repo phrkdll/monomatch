@@ -4,7 +4,7 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/phrkdll/monomatch/pkg/models/symbol"
+	"github.com/phrkdll/monomatch/pkg/symbol"
 	"github.com/stretchr/testify/assert"
 )
 
