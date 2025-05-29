@@ -1,3 +1,3 @@
 # monomatch
 
-A multiplayer "symbol" matching card game.
+A multiplayer "symbol" matching game.
