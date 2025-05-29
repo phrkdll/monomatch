@@ -1,12 +1,10 @@
 package gen
 
 import (
-	"encoding/json"
-	"os"
 	"slices"
 	"testing"
 
-	"github.com/phrkdll/monomatch/pkg/models"
+	"github.com/phrkdll/monomatch/pkg/models/card"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -43,8 +41,8 @@ func TestGenerateCards(t *testing.T) {
 			if err == nil {
 				assert.Len(t, cards, len(tc.symbols))
 
-				ids := []models.CardId{}
-				var prevCard *models.Card
+				ids := []card.CardId{}
+				var prevCard *card.Card
 				for _, card := range cards {
 					if !assert.False(t, slices.Contains(ids, card.ID)) || !assert.Len(t, card.Symbols, 8) {
 						return
@@ -61,28 +59,7 @@ func TestGenerateCards(t *testing.T) {
 
 					prevCard = &card
 				}
-
-				writeJson(cards, "testresult.gen.json")
 			}
 		})
 	}
-}
-
-func writeJson(v any, file string) error {
-	j, err := json.MarshalIndent(v, "", "\t")
-	if err != nil {
-		panic(err)
-	}
-
-	f, err := os.Create(file)
-	if err != nil {
-		return err
-	}
-
-	_, err = f.Write(j)
-	if err != nil {
-		return f.Close()
-	}
-
-	return f.Close()
 }

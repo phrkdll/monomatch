@@ -1,15 +1,18 @@
 package gen
 
-import "github.com/phrkdll/monomatch/pkg/models"
+import (
+	"github.com/google/uuid"
+	"github.com/phrkdll/monomatch/pkg/models/symbol"
+)
 
-func MakeSymbols(names []string) []models.Symbol {
-	symbols := make([]models.Symbol, len(names))
+func MakeSymbols(names []string) []symbol.Symbol {
+	var symbols []symbol.Symbol
 
-	for i, name := range names {
-		symbols[i] = models.Symbol{
-			ID:   models.NewSymbolId(int64(i)),
+	for _, name := range names {
+		symbols = append(symbols, symbol.Symbol{
+			ID:   symbol.SymbolId{Inner: uuid.New().String()},
 			Name: name,
-		}
+		})
 	}
 
 	return symbols

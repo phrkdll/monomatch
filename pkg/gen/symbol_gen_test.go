@@ -1,9 +1,10 @@
 package gen
 
 import (
+	"slices"
 	"testing"
 
-	"github.com/phrkdll/monomatch/pkg/models"
+	"github.com/phrkdll/monomatch/pkg/models/symbol"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,7 +22,10 @@ func TestMakeSymbols(t *testing.T) {
 
 	assert.Len(t, symbols, len(testSymbols))
 
-	for i, r := range symbols {
-		assert.Equal(t, models.NewSymbolId(int64(i)), r.ID)
+	var symbolIds []symbol.SymbolId
+	for _, r := range symbols {
+		symbolIds = append(symbolIds, r.ID)
 	}
+
+	assert.Len(t, slices.Compact(symbolIds), len(symbols))
 }
