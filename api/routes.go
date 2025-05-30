@@ -1,4 +1,4 @@
-package api
+package main
 
 import (
 	"github.com/go-chi/chi/v5"
@@ -6,6 +6,6 @@ import (
 	"github.com/phrkdll/monomatch/api/session"
 )
 
-func RegisterRoutes(mux *chi.Mux) {
+func registerRoutes(mux *chi.Mux) {
 	session.RegisterRoutes(mux)
 }
