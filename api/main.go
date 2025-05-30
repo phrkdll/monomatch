@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/phrkdll/monomatch/api/session"
 )
 
 func main() {
@@ -44,4 +45,8 @@ func initChi() *chi.Mux {
 	registerRoutes(r)
 
 	return r
+}
+
+func registerRoutes(mux *chi.Mux) {
+	session.RegisterRoutes(mux)
 }
