@@ -2,24 +2,78 @@
 
 ###
 
-POST {{baseUrl}}/sessions/new
-Content-Type: application/json
-
-[
-  "Metallica",  "Iron Maiden",  "Slayer",  "Megadeth",  "Pantera",  "Black Sabbath",  "Judas Priest",  "Lamb of God",  "Slipknot",  "System of a Down",
-  "Sepultura",  "Opeth",  "Gojira",  "Amon Amarth",  "Trivium",  "Behemoth",  "Nightwish",  "Children of Bodom",  "Dream Theater",  "Anthrax",
-  "Testament",  "Kreator",  "Overkill",  "Machine Head",  "In Flames",  "Arch Enemy",  "Dark Tranquillity",  "Dimmu Borgir",  "Emperor",  "Cradle of Filth",
-  "Cannibal Corpse",  "Morbid Angel",  "Deicide",  "Obituary",  "Death",  "Carcass",  "Napalm Death",  "Suffocation",  "Amorphis",  "Ensiferum",
-  "Eluveitie",  "Blind Guardian",  "Iced Earth",  "HammerFall",  "Stratovarius",  "Sonata Arctica",  "Sabaton",  "Manowar",  "Venom",  "Bathory",
-  "Immortal",  "Marduk",  "Watain",  "Mayhem",  "Satyricon",  "Enslaved",  "Borknagar"
-]
-
-###
-
-POST {{baseUrl}}/sessions/join
+POST {{baseUrl}}/sessions/new 
 Content-Type: application/json
 
 {
-  "id": "e5e4339f-72ae-4c7e-98a1-4e93dffa0851",
-  "playerName": "phreakadelle"
+    "sessionName": "matching maggot",
+    "symbols": [
+        "Metallica",
+        "Iron Maiden",
+        "Slayer",
+        "Megadeth",
+        "Pantera",
+        "Black Sabbath",
+        "Judas Priest",
+        "Lamb of God",
+        "Slipknot",
+        "System of a Down",
+        "Sepultura",
+        "Opeth",
+        "Gojira",
+        "Amon Amarth",
+        "Trivium",
+        "Behemoth",
+        "Nightwish",
+        "Children of Bodom",
+        "Dream Theater",
+        "Anthrax",
+        "Testament",
+        "Kreator",
+        "Overkill",
+        "Machine Head",
+        "In Flames",
+        "Arch Enemy",
+        "Dark Tranquillity",
+        "Dimmu Borgir",
+        "Emperor",
+        "Cradle of Filth",
+        "Cannibal Corpse",
+        "Morbid Angel",
+        "Deicide",
+        "Obituary",
+        "Death",
+        "Carcass",
+        "Napalm Death",
+        "Suffocation",
+        "Amorphis",
+        "Ensiferum",
+        "Eluveitie",
+        "Blind Guardian",
+        "Iced Earth",
+        "HammerFall",
+        "Stratovarius",
+        "Sonata Arctica",
+        "Sabaton",
+        "Manowar",
+        "Venom",
+        "Bathory",
+        "Immortal",
+        "Marduk",
+        "Watain",
+        "Mayhem",
+        "Satyricon",
+        "Enslaved",
+        "Borknagar"
+    ]
+}
+
+###
+
+POST {{baseUrl}}/sessions/join 
+Content-Type: application/json
+
+{
+    "id": "51214d56-6bde-4570-a543-d99df9b64f11",
+    "playerName": "phreakadelle"
 }

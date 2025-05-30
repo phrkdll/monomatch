@@ -20,12 +20,13 @@ type SessionId strongoid.Id[string]
 
 type Session struct {
 	ID        SessionId       `json:"id"`
+	Name      string          `json:"name"`
 	CreatedAt time.Time       `json:"createdAt"`
 	Cards     []card.Card     `json:"-"`
 	Players   []player.Player `json:"-"`
 }
 
-func New(input []string) (*Session, error) {
+func New(name string, input []string) (*Session, error) {
 	symbols := gen.MakeSymbols(input)
 	cards, err := gen.GenerateCards(symbols)
 	if err != nil {
@@ -34,6 +35,7 @@ func New(input []string) (*Session, error) {
 
 	return &Session{
 		ID:        SessionId{Inner: uuid.New().String()},
+		Name:      name,
 		CreatedAt: time.Now().UTC(),
 		Cards:     cards,
 		Players:   []player.Player{},

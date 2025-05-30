@@ -8,13 +8,13 @@ import (
 	"github.com/phrkdll/monomatch/pkg/session/store"
 )
 
-type joinRequest struct {
+type JoinRequest struct {
 	Id         session.SessionId `json:"id"`
 	PlayerName string            `json:"playerName"`
 }
 
 func joinSession(w http.ResponseWriter, r *http.Request) {
-	var request joinRequest
+	var request JoinRequest
 
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {

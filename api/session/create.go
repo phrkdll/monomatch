@@ -8,10 +8,15 @@ import (
 	"github.com/phrkdll/monomatch/pkg/session/store"
 )
 
-func createSession(w http.ResponseWriter, r *http.Request) {
-	var input []string
+type CreateSessionRequest struct {
+	SessionName string   `json:"sessionName"`
+	Symbols     []string `json:"symbols"`
+}
 
-	err := json.NewDecoder(r.Body).Decode(&input)
+func createSession(w http.ResponseWriter, r *http.Request) {
+	var request CreateSessionRequest
+
+	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
@@ -19,7 +24,7 @@ func createSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	session, err := session.New(input)
+	session, err := session.New(request.SessionName, request.Symbols)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
