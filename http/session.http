@@ -2,7 +2,7 @@
 
 ###
 
-POST {{baseUrl}}/sessions/new 
+POST {{baseUrl}}/session/create 
 Content-Type: application/json
 
 {
@@ -70,7 +70,7 @@ Content-Type: application/json
 
 ###
 
-POST {{baseUrl}}/sessions/join 
+POST {{baseUrl}}/session/join 
 Content-Type: application/json
 
 {
