@@ -8,7 +8,7 @@ import (
 )
 
 type SessionStore struct {
-	sessions map[session.SessionId]session.Session
+	sessions map[session.SessionId]*session.Session
 }
 
 var (
@@ -20,13 +20,13 @@ var (
 func Instance() *SessionStore {
 	if instance == nil {
 		slog.Info("creating session store instance")
-		instance = &SessionStore{sessions: make(map[session.SessionId]session.Session)}
+		instance = &SessionStore{sessions: make(map[session.SessionId]*session.Session)}
 	}
 
 	return instance
 }
 
-func (ss *SessionStore) Add(s session.Session) error {
+func (ss *SessionStore) Add(s *session.Session) error {
 	if _, ok := ss.sessions[s.ID]; ok {
 		return ErrSessionAlreadyExists
 	}
@@ -47,7 +47,7 @@ func (ss *SessionStore) Exists(id session.SessionId) bool {
 
 func (ss *SessionStore) Get(id session.SessionId) (*session.Session, error) {
 	if session, ok := ss.sessions[id]; ok {
-		return &session, nil
+		return session, nil
 	}
 
 	return nil, ErrSessionDoesNotExist

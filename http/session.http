@@ -20,6 +20,6 @@ POST {{baseUrl}}/sessions/join
 Content-Type: application/json
 
 {
-  "id": "a775f546-ad14-4e49-8a40-d0e1278dc9ef",
+  "id": "e5e4339f-72ae-4c7e-98a1-4e93dffa0851",
   "playerName": "phreakadelle"
 }

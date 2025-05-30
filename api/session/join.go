@@ -32,7 +32,7 @@ func joinSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	p, err := session.NewPlayer(request.PlayerName)
+	p, err := session.AddPlayer(request.PlayerName)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))

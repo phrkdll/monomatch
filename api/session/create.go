@@ -27,7 +27,7 @@ func createSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	store.Instance().Add(*session)
+	store.Instance().Add(session)
 
 	json, err := json.Marshal(&session)
 	if err != nil {

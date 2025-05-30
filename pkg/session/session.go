@@ -36,10 +36,11 @@ func New(input []string) (*Session, error) {
 		ID:        SessionId{Inner: uuid.New().String()},
 		CreatedAt: time.Now().UTC(),
 		Cards:     cards,
+		Players:   []player.Player{},
 	}, nil
 }
 
-func (s *Session) NewPlayer(name string) (*player.Player, error) {
+func (s *Session) AddPlayer(name string) (*player.Player, error) {
 	for _, p := range s.Players {
 		if p.Name == name {
 			return nil, ErrPlayerNameAlreadyTaken
