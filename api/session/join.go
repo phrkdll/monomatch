@@ -6,6 +6,7 @@ import (
 
 	"github.com/phrkdll/monomatch/pkg/session"
 	"github.com/phrkdll/monomatch/pkg/session/store"
+	"github.com/phrkdll/must/pkg/must"
 )
 
 type JoinRequest struct {
@@ -14,39 +15,25 @@ type JoinRequest struct {
 }
 
 func joinSession(w http.ResponseWriter, r *http.Request) {
+	defer must.Recover()
+
 	var request JoinRequest
 
 	err := json.NewDecoder(r.Body).Decode(&request)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
-
-		return
-	}
+	must.SucceedOr(err).Respond(w, http.StatusBadRequest)
+	must.Succeed(err)
 
 	session, err := store.Instance().Get(request.Id)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
-
-		return
-	}
+	must.SucceedOr(err).Respond(w, http.StatusBadRequest)
+	must.Succeed(err)
 
 	p, err := session.AddPlayer(request.PlayerName)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
-
-		return
-	}
+	must.SucceedOr(err).Respond(w, http.StatusBadRequest)
+	must.Succeed(err)
 
 	json, err := json.Marshal(&p)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
-
-		return
-	}
+	must.SucceedOr(err).Respond(w, http.StatusBadRequest)
+	must.Succeed(err)
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(json)
