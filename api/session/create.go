@@ -6,6 +6,7 @@ import (
 
 	"github.com/phrkdll/monomatch/pkg/session"
 	"github.com/phrkdll/monomatch/pkg/session/store"
+	"github.com/phrkdll/must/pkg/must"
 )
 
 type CreateSessionRequest struct {
@@ -14,33 +15,23 @@ type CreateSessionRequest struct {
 }
 
 func createSession(w http.ResponseWriter, r *http.Request) {
+	defer must.Recover()
+
 	var request CreateSessionRequest
 
 	err := json.NewDecoder(r.Body).Decode(&request)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
-
-		return
-	}
+	must.SucceedOr(err).Respond(w, http.StatusBadRequest)
+	must.Succeed(err)
 
 	session, err := session.New(request.SessionName, request.Symbols)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
-
-		return
-	}
+	must.SucceedOr(err).Respond(w, http.StatusBadRequest)
+	must.Succeed(err)
 
 	store.Instance().Add(session)
 
 	json, err := json.Marshal(&session)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
-
-		return
-	}
+	must.SucceedOr(err).Respond(w, http.StatusBadRequest)
+	must.Succeed(err)
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(json)
