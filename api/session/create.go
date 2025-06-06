@@ -19,19 +19,19 @@ func createSession(w http.ResponseWriter, r *http.Request) {
 
 	var request CreateSessionRequest
 
-	err := json.NewDecoder(r.Body).Decode(&request)
-	must.SucceedOr(err).Respond(w, http.StatusBadRequest)
-	must.Succeed(err)
+	must.Succeed(json.NewDecoder(r.Body).Decode(&request)).
+		ElseRespond(w, http.StatusBadRequest).
+		ElsePanic()
 
-	session, err := session.New(request.SessionName, request.Symbols)
-	must.SucceedOr(err).Respond(w, http.StatusBadRequest)
-	must.Succeed(err)
+	session := must.Return(session.New(request.SessionName, request.Symbols)).
+		ElseRespond(w, http.StatusBadRequest).
+		ElsePanic()
 
 	store.Instance().Add(session)
 
-	json, err := json.Marshal(&session)
-	must.SucceedOr(err).Respond(w, http.StatusBadRequest)
-	must.Succeed(err)
+	json := must.Return(json.Marshal(&session)).
+		ElseRespond(w, http.StatusBadRequest).
+		ElsePanic()
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(json)

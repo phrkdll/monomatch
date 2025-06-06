@@ -19,21 +19,21 @@ func joinSession(w http.ResponseWriter, r *http.Request) {
 
 	var request JoinRequest
 
-	err := json.NewDecoder(r.Body).Decode(&request)
-	must.SucceedOr(err).Respond(w, http.StatusBadRequest)
-	must.Succeed(err)
+	must.Succeed(json.NewDecoder(r.Body).Decode(&request)).
+		ElseRespond(w, http.StatusBadRequest).
+		ElsePanic()
 
-	session, err := store.Instance().Get(request.Id)
-	must.SucceedOr(err).Respond(w, http.StatusBadRequest)
-	must.Succeed(err)
+	session := must.Return(store.Instance().Get(request.Id)).
+		ElseRespond(w, http.StatusBadRequest).
+		ElsePanic()
 
-	p, err := session.AddPlayer(request.PlayerName)
-	must.SucceedOr(err).Respond(w, http.StatusBadRequest)
-	must.Succeed(err)
+	p := must.Return(session.AddPlayer(request.PlayerName)).
+		ElseRespond(w, http.StatusBadRequest).
+		ElsePanic()
 
-	json, err := json.Marshal(&p)
-	must.SucceedOr(err).Respond(w, http.StatusBadRequest)
-	must.Succeed(err)
+	json := must.Return(json.Marshal(&p)).
+		ElseRespond(w, http.StatusBadRequest).
+		ElsePanic()
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(json)

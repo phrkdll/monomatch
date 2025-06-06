@@ -11,7 +11,7 @@ require github.com/go-chi/chi/v5 v5.2.1
 
 require github.com/go-chi/cors v1.2.1
 
-require github.com/phrkdll/must v0.3.0 // indirect
+require github.com/phrkdll/must v0.4.0 // indirect
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
