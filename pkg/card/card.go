@@ -1,6 +1,8 @@
 package card
 
 import (
+	"errors"
+
 	"github.com/google/uuid"
 	"github.com/phrkdll/monomatch/pkg/symbol"
 	"github.com/phrkdll/strongoid/pkg/strongoid"
@@ -14,9 +16,22 @@ type Card struct {
 	Symbols []symbol.Symbol `json:"symbols"`
 }
 
-func New(symbols []symbol.Symbol) *Card {
-	return &Card{
-		ID:      CardId{Inner: uuid.New().String()},
-		Symbols: symbols,
+var (
+	ErrInsufficientSymbols = errors.New("insufficient symbols provided")
+	ErrTooManySymbols      = errors.New("too many symbols provided")
+)
+
+func New(symbols []symbol.Symbol) (*Card, error) {
+	if len(symbols) < 8 {
+		return nil, ErrInsufficientSymbols
 	}
+
+	if len(symbols) > 8 {
+		return nil, ErrTooManySymbols
+	}
+
+	return &Card{
+		ID:      CardId{Inner: uuid.NewString()},
+		Symbols: symbols,
+	}, nil
 }

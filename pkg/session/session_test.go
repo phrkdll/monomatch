@@ -20,7 +20,7 @@ func TestNew(t *testing.T) {
 	testCases := []testCase{
 		{
 			name:    "complete set of symbols",
-			symbols: testdata.Symbols,
+			symbols: testdata.SymbolNames,
 			err:     nil,
 		},
 		{
@@ -68,7 +68,7 @@ func TestAddPlayer(t *testing.T) {
 		},
 	}
 
-	testSession, _ := session.New("test", testdata.Symbols)
+	testSession, _ := session.New("test", testdata.SymbolNames)
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			player, err := testSession.AddPlayer(tc.playerName)

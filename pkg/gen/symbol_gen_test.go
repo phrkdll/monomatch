@@ -11,9 +11,9 @@ import (
 )
 
 func TestMakeSymbols(t *testing.T) {
-	symbols := gen.MakeSymbols(testdata.Symbols)
+	symbols := gen.MakeSymbols(testdata.SymbolNames)
 
-	assert.Len(t, symbols, len(testdata.Symbols))
+	assert.Len(t, symbols, len(testdata.SymbolNames))
 
 	var symbolIds []symbol.SymbolId
 	for _, r := range symbols {

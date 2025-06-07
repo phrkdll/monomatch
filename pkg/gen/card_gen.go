@@ -5,6 +5,7 @@ import (
 
 	"github.com/phrkdll/monomatch/pkg/card"
 	"github.com/phrkdll/monomatch/pkg/symbol"
+	"github.com/phrkdll/must/pkg/must"
 )
 
 const n = 7 // Order of the projective plane
@@ -22,28 +23,30 @@ func GenerateCards(symbols []symbol.Symbol) ([]card.Card, error) {
 	var cards []card.Card
 
 	// 1. First card
-	cards = append(cards, *card.New(symbols[:n+1]))
+	cards = append(cards, *must.Return(card.New(symbols[:n+1])).ElsePanic())
 
 	// 2. n groups with n cards each
 	for i := range n {
 		for j := range n {
-			card := card.New([]symbol.Symbol{symbols[i+1]})
+			groupSymbols := []symbol.Symbol{symbols[i+1]}
 			for k := range n {
 				index := n + 1 + n*k + ((i*k + j) % n)
-				card.Symbols = append(card.Symbols, symbols[index])
+				groupSymbols = append(groupSymbols, symbols[index])
 			}
-			cards = append(cards, *card)
+
+			cards = append(cards, *must.Return(card.New(groupSymbols)).ElsePanic())
 		}
 	}
 
 	// 3. Last n cards
 	for k := range n {
-		card := card.New([]symbol.Symbol{symbols[0]})
+		lastSymbols := []symbol.Symbol{symbols[0]}
 		for i := range n {
 			index := n + 1 + n*k + i
-			card.Symbols = append(card.Symbols, symbols[index])
+			lastSymbols = append(lastSymbols, symbols[index])
 		}
-		cards = append(cards, *card)
+
+		cards = append(cards, *must.Return(card.New(lastSymbols)).ElsePanic())
 	}
 
 	return cards, nil

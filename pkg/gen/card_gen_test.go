@@ -30,7 +30,7 @@ func TestGenerateCards(t *testing.T) {
 		},
 		{
 			name:      "Exact number of symbols provided",
-			symbols:   testdata.Symbols,
+			symbols:   testdata.SymbolNames,
 			expectErr: nil,
 		},
 	}
