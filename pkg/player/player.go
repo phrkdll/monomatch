@@ -28,7 +28,8 @@ func New(name string) (*Player, error) {
 	}
 
 	return &Player{
-		ID:   PlayerId{Inner: uuid.NewString()},
-		Name: name,
+		ID:    PlayerId{Inner: uuid.NewString()},
+		Name:  name,
+		Cards: stack.Stack[card.Card]{},
 	}, nil
 }
