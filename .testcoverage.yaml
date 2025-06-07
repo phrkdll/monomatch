@@ -40,7 +40,7 @@ exclude:
     - ^pkg/bar        # exclude package `pkg/bar`
     - .gen.go         # exclude generated code
     - ^api/           # exclude api (for now)
-    - ^session/store  # exclude session store (could be database in the future)
+    - ^session/store/ # exclude session store (could be database in the future)
 
 # File name of go-test-coverage breakdown file, which can be used to
 # analyze coverage difference.
