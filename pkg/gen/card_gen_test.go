@@ -1,10 +1,12 @@
-package gen
+package gen_test
 
 import (
 	"slices"
 	"testing"
 
+	"github.com/phrkdll/monomatch/internal/testdata"
 	"github.com/phrkdll/monomatch/pkg/card"
+	"github.com/phrkdll/monomatch/pkg/gen"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,23 +21,23 @@ func TestGenerateCards(t *testing.T) {
 		{
 			name:      "No symbols provided",
 			symbols:   []string{},
-			expectErr: ErrNotEnoughSymbolsProvided,
+			expectErr: gen.ErrNotEnoughSymbolsProvided,
 		},
 		{
 			name:      "Not enough symbols provided",
 			symbols:   []string{"Lonely symbol"},
-			expectErr: ErrNotEnoughSymbolsProvided,
+			expectErr: gen.ErrNotEnoughSymbolsProvided,
 		},
 		{
 			name:      "Exact number of symbols provided",
-			symbols:   testSymbols,
+			symbols:   testdata.SymbolNames,
 			expectErr: nil,
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			cards, err := GenerateCards(MakeSymbols(tc.symbols))
+			cards, err := gen.GenerateCards(gen.MakeSymbols(tc.symbols))
 
 			assert.Equal(t, tc.expectErr, err)
 			if err == nil {
