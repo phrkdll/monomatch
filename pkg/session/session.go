@@ -8,6 +8,7 @@ import (
 	"github.com/phrkdll/monomatch/pkg/card"
 	"github.com/phrkdll/monomatch/pkg/gen"
 	"github.com/phrkdll/monomatch/pkg/player"
+	"github.com/phrkdll/monomatch/pkg/stack"
 	"github.com/phrkdll/strongoid/pkg/strongoid"
 )
 
@@ -19,11 +20,11 @@ var (
 type SessionId strongoid.Id[string]
 
 type Session struct {
-	ID        SessionId       `json:"id"`
-	Name      string          `json:"name"`
-	CreatedAt time.Time       `json:"createdAt"`
-	Cards     []card.Card     `json:"-"`
-	Players   []player.Player `json:"-"`
+	ID        SessionId              `json:"id"`
+	Name      string                 `json:"name"`
+	CreatedAt time.Time              `json:"createdAt"`
+	Cards     stack.Stack[card.Card] `json:"-"`
+	Players   []player.Player        `json:"-"`
 }
 
 func New(name string, input []string) (*Session, error) {
@@ -37,7 +38,7 @@ func New(name string, input []string) (*Session, error) {
 		ID:        SessionId{Inner: uuid.New().String()},
 		Name:      name,
 		CreatedAt: time.Now().UTC(),
-		Cards:     cards,
+		Cards:     stack.New(cards),
 		Players:   []player.Player{},
 	}, nil
 }

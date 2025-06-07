@@ -13,6 +13,10 @@ type Stack[T any] struct {
 	items []T
 }
 
+func New[T any](items []T) Stack[T] {
+	return Stack[T]{items}
+}
+
 // Pushes a new item on top of the stack
 func (s *Stack[T]) Push(data T) {
 	s.items = append(s.items, data)
@@ -43,4 +47,9 @@ func (s *Stack[T]) IsEmpty() bool {
 	}
 
 	return false
+}
+
+// True if there are no stacked items
+func (s *Stack[T]) Len() int {
+	return len(s.items)
 }
