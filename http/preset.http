@@ -1,0 +1,5 @@
+@baseUrl = http://localhost:1982
+
+### Get presets
+GET {{baseUrl}}/preset
+Content-Type: application/json
