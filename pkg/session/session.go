@@ -2,6 +2,7 @@ package session
 
 import (
 	"errors"
+	"math/rand"
 	"time"
 
 	"github.com/google/uuid"
@@ -30,6 +31,22 @@ type Session struct {
 func New(name string, input []string) (*Session, error) {
 	symbols := gen.MakeSymbols(input)
 	cards, err := gen.GenerateCards(symbols)
+
+	stack := stack.New(cards)
+	rand.New(rand.NewSource(time.Now().UnixNano()))
+	indices := rand.Perm(len(cards))
+
+	var loop int
+	for _, index := range indices {
+		if loop == len(cards) {
+			break
+		}
+
+		stack.Push(cards[index])
+
+		loop++
+	}
+
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +55,7 @@ func New(name string, input []string) (*Session, error) {
 		ID:        SessionId{Inner: uuid.New().String()},
 		Name:      name,
 		CreatedAt: time.Now().UTC(),
-		Cards:     stack.New(cards),
+		Cards:     stack,
 		Players:   []player.Player{},
 	}, nil
 }
