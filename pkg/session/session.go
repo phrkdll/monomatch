@@ -32,7 +32,7 @@ func New(name string, input []string) (*Session, error) {
 	symbols := gen.MakeSymbols(input)
 	cards, err := gen.GenerateCards(symbols)
 
-	stack := stack.New(cards)
+	stack := stack.New([]card.Card{})
 	rand.New(rand.NewSource(time.Now().UnixNano()))
 	indices := rand.Perm(len(cards))
 

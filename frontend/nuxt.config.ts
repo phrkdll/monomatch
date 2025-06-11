@@ -1,5 +1,3 @@
-import tailwindcss from "@tailwindcss/vite";
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
 	modules: [
@@ -7,13 +5,12 @@ export default defineNuxtConfig({
 		"@nuxt/icon",
 		"@pinia/nuxt",
 		"nuxt-security",
+		"@nuxtjs/tailwindcss",
 	],
 	devtools: { enabled: true },
-	css: ['~/assets/main.css'],
+	css: ["@picocss/pico/css/pico.sand.min.css"],
 	runtimeConfig: {
-		public: {
-			apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL,
-		},
+		apiUrl: "http://localhost:1982/",
 	},
 	compatibilityDate: "2025-05-15",
 	eslint: {
@@ -26,9 +23,4 @@ export default defineNuxtConfig({
 			},
 		},
 	},
-	vite: {
-		plugins: [
-			tailwindcss(),
-		],
-	},
-});
+})

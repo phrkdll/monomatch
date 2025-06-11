@@ -1,15 +1,19 @@
 <script setup lang="ts">
-import type { CreateSessionResponse } from "~/types/session/create"
+import type { Preset, PresetListResponse } from "~/types/presets/presets"
+import type { CreateSessionResponse } from "~/types/sessions/create"
 
-const isDialogOpen = ref(false)
 const busy = ref(false)
 
-const api = useRuntimeConfig().public.apiBaseUrl
-
 const name = ref("")
+const selectedPreset = ref("")
 
-const openDialog = () => isDialogOpen.value = true
-const closeDialog = () => isDialogOpen.value = false
+const { data } = await useFetch<PresetListResponse>("/api/presets", {
+	method: "GET",
+})
+
+const presets = ref<Preset[]>([])
+presets.value = data.value?.presets || []
+console.log(data.value, presets.value)
 
 async function onSubmit() {
 	const syms: string[] = []
@@ -17,89 +21,81 @@ async function onSubmit() {
 		syms.push((i + 1).toString())
 	}
 
-	const { data } = await useFetch<CreateSessionResponse>(api + "session/create", {
+	const createResponse = await $fetch<CreateSessionResponse>("/api/sessions/create", {
 		method: "POST",
 		body: {
 			sessionName: name.value.toString(),
-			symbols: syms,
+			presetId: selectedPreset.value,
+			symbols: selectedPreset.value === "custom" ? null : syms,
 		},
 	})
+	console.log(createResponse)
 
-	if (data.value) {
-		navigateTo(`session/${data.value?.id}`)
+	if (createResponse) {
+		navigateTo(`/sessions/${createResponse.id}`)
 	}
-	closeDialog()
+
+	console.log(presets.value)
 }
 </script>
 
 <template>
 	<div>
-		<article
-			class="w-96 mx-auto"
-			:aria-busy="busy"
-		>
-			<header>Welcome to monomatch!</header>
-			A simple, yet flexible symbol matching game.
-
-			<footer class="flex flex-col gap-2">
-				<button
-					class="w-full"
-					@click="openDialog"
-				>
-					Create room
-				</button>
-				<button class="w-full">
-					Join room
-				</button>
-			</footer>
-		</article>
-		<Transition>
-			<dialog
-				v-if="isDialogOpen"
-				open
+		<form @submit.prevent="onSubmit">
+			<article
+				class="w-96 mx-auto"
+				:aria-busy="busy"
 			>
-				<form @submit.prevent="onSubmit">
-					<article class="w-96">
-						<header>Create room</header>
+				<header>Welcome to monomatch!</header>
+				<p>
+					A simple, yet flexible symbol matching game.
+				</p>
 
-						<input
-							v-model="name"
-							v-focus
-							type="text"
-							placeholder="Session name"
-						>
+				<input
+					v-model="name"
+					v-focus
+					type="text"
+					placeholder="Session name"
+					name="sessionName"
+				>
 
-						<select>
-							<option
-								selected
-								disabled
-								value=""
-							>
-								Select preset...
-							</option>
-							<option value="bands">
-								Metal Bands (57 Symbols)
-							</option>
-							<option value="custom">
-								Custom
-							</option>
-						</select>
-						<footer class="flex flex-col gap-2">
-							<button class="w-full">
-								Create
-							</button>
-							<button
-								type="button"
-								class="w-full"
-								@click="closeDialog"
-							>
-								Cancel
-							</button>
-						</footer>
-					</article>
-				</form>
-			</dialog>
-		</Transition>
+				<select
+					id="presets"
+					v-model="selectedPreset"
+					name="presets"
+				>
+					<option
+						selected
+						disabled
+						value=""
+					>
+						Select preset...
+					</option>
+					<option
+						v-for="preset in presets"
+						:key="preset.id"
+						:value="preset.id"
+					>
+						{{ preset.displayName }}
+					</option>
+					<option value="custom">
+						Custom
+					</option>
+				</select>
+
+				<footer class="flex flex-col gap-2">
+					<button class="w-full">
+						Create room
+					</button>
+					<button
+						type="button"
+						class="w-full"
+					>
+						Join room
+					</button>
+				</footer>
+			</article>
+		</form>
 	</div>
 </template>
 
