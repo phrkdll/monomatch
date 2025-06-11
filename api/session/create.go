@@ -4,14 +4,16 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/phrkdll/monomatch/pkg/preset"
 	"github.com/phrkdll/monomatch/pkg/session"
 	"github.com/phrkdll/monomatch/pkg/session/store"
 	"github.com/phrkdll/must/pkg/must"
 )
 
 type CreateSessionRequest struct {
-	SessionName string   `json:"sessionName"`
-	Symbols     []string `json:"symbols"`
+	SessionName string           `json:"sessionName"`
+	Preset      *preset.PresetId `json:"preset"`
+	Symbols     *[]string        `json:"symbols"`
 }
 
 func createSession(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +23,7 @@ func createSession(w http.ResponseWriter, r *http.Request) {
 
 	must.Succeed(json.NewDecoder(r.Body).Decode(&request)).ElseRespond(w, http.StatusBadRequest)
 
-	session := must.Return(session.New(request.SessionName, request.Symbols)).ElseRespond(w, http.StatusBadRequest)
+	session := must.Return(session.New(request.SessionName, *request.Symbols)).ElseRespond(w, http.StatusBadRequest)
 
 	store.Instance().Add(session)
 
