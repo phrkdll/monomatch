@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<AppNavBar />
-		<main class="container">
+		<app-navbar />
+		<main class="container flex justify-center">
 			<slot />
 		</main>
 	</div>

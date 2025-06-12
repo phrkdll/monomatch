@@ -1,25 +1,23 @@
+import tailwindcss from "@tailwindcss/vite"
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-	modules: [
-		"@nuxt/eslint",
-		"@nuxt/icon",
-		"@pinia/nuxt",
-		"nuxt-security",
-		"@nuxtjs/tailwindcss",
-	],
+	modules: ["@nuxt/eslint", "@nuxt/icon", "@pinia/nuxt"],
 	devtools: { enabled: true },
-	css: ["@picocss/pico/css/pico.sand.min.css"],
-	runtimeConfig: {
-		apiUrl: "http://localhost:1982/",
-	},
+	css: ["~/assets/css/main.css"],
 	compatibilityDate: "2025-05-15",
+	vite: {
+		plugins: [
+			tailwindcss(),
+		],
+	},
 	eslint: {
 		config: {
 			stylistic: {
 				semi: false,
 				quotes: "double",
-				commaDangle: "always-multiline",
 				indent: "tab",
+				commaDangle: "always-multiline",
 			},
 		},
 	},
