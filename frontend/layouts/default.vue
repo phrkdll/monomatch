@@ -1,8 +1,6 @@
 <template>
-	<div>
+	<main class="container mx-auto">
 		<app-navbar />
-		<main class="container flex justify-center">
-			<slot />
-		</main>
-	</div>
+		<slot />
+	</main>
 </template>

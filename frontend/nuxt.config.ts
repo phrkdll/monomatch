@@ -5,8 +5,10 @@ export default defineNuxtConfig({
 	modules: ["@nuxt/eslint", "@nuxt/icon", "@pinia/nuxt"],
 	devtools: { enabled: true },
 	css: ["~/assets/css/main.css"],
-	compatibilityDate: "2025-05-15",
-	vite: {
+	runtimeConfig: {
+		apiUrl: "http://localhost:1982/",
+	},
+	compatibilityDate: "2025-05-15", vite: {
 		plugins: [
 			tailwindcss(),
 		],

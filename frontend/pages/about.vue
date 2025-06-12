@@ -1,3 +1,7 @@
 <template>
-	<h1>About</h1>
+	<UCard>
+		<template #header>
+			<h2>monomatch</h2>
+		</template>
+	</UCard>
 </template>
