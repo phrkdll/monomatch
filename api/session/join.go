@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/phrkdll/monomatch/internal/utils"
 	"github.com/phrkdll/monomatch/pkg/session"
 	"github.com/phrkdll/monomatch/pkg/session/store"
 	"github.com/phrkdll/must/pkg/must"
@@ -27,6 +28,5 @@ func joinSession(w http.ResponseWriter, r *http.Request) {
 
 	json := must.Return(json.Marshal(&p)).ElseRespond(w, http.StatusBadRequest)
 
-	w.WriteHeader(http.StatusOK)
-	w.Write(json)
+	utils.SendJSON(w, http.StatusOK, json)
 }
