@@ -27,11 +27,11 @@ func Instance() *SessionStore {
 }
 
 func (ss *SessionStore) Add(s *session.Session) error {
-	if _, ok := ss.sessions[s.ID]; ok {
+	if _, ok := ss.sessions[s.Id]; ok {
 		return ErrSessionAlreadyExists
 	}
 
-	ss.sessions[s.ID] = s
+	ss.sessions[s.Id] = s
 	slog.Info("session added", "count", len(ss.sessions))
 
 	return nil

@@ -46,10 +46,10 @@ func TestGenerateCards(t *testing.T) {
 				ids := []card.CardId{}
 				var prevCard *card.Card
 				for _, card := range cards {
-					if !assert.False(t, slices.Contains(ids, card.ID)) || !assert.Len(t, card.Symbols, 8) {
+					if !assert.False(t, slices.Contains(ids, card.Id)) || !assert.Len(t, card.Symbols, 8) {
 						return
 					}
-					ids = append(ids, card.ID)
+					ids = append(ids, card.Id)
 					if prevCard == nil {
 						continue
 					}

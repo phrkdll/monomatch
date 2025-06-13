@@ -21,7 +21,7 @@ func MakeSymbols(names []string) []symbol.Symbol {
 		}
 
 		symbols = append(symbols, symbol.Symbol{
-			ID:   symbol.SymbolId{Inner: uuid.New().String()},
+			Id:   symbol.SymbolId{Inner: uuid.New().String()},
 			Name: names[index],
 		})
 

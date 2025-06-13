@@ -17,7 +17,7 @@ var (
 type PlayerId strongoid.Id[string]
 
 type Player struct {
-	ID    PlayerId               `json:"id"`
+	Id    PlayerId               `json:"id"`
 	Name  string                 `json:"name"`
 	Cards stack.Stack[card.Card] `json:"-"`
 }
@@ -28,7 +28,7 @@ func New(name string) (*Player, error) {
 	}
 
 	return &Player{
-		ID:    PlayerId{Inner: uuid.NewString()},
+		Id:    PlayerId{Inner: uuid.NewString()},
 		Name:  name,
 		Cards: stack.Stack[card.Card]{},
 	}, nil

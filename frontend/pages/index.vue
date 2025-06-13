@@ -1,16 +1,43 @@
 <script setup lang="ts">
 import type { Preset, PresetsResponse } from "~/types/presets"
+import type { CreateSessionResponse } from "~/types/session"
+import { CreateSessionRequestSchema } from "~/types/session"
 
 const { data } = useLazyFetch<PresetsResponse>("/api/presets")
 
 const sessionName = ref<string>("")
 const selectedPreset = ref<Preset | undefined>(undefined)
+const symbols = ref("")
 
 async function onSubmit() {
-	// Handle form submission logic here
-	// For example, you might want to send the sessionName and selectedPreset to the server
-	console.log("Session Name:", sessionName.value)
-	console.log("Selected Preset:", selectedPreset.value)
+	const request = await CreateSessionRequestSchema.safeParseAsync({
+		sessionName: sessionName.value,
+		preset: selectedPreset.value?.id,
+		symbols: selectedPreset.value?.id === "custom" && symbols.value ? JSON.parse(symbols.value || "[]") : undefined,
+	})
+
+	console.log("Session created:", request)
+	if (request.error) {
+		console.log(request.error.flatten())
+		return
+	}
+
+	try {
+		const response = await $fetch<CreateSessionResponse>("/api/sessions/create", {
+			method: "POST",
+			body: request.data,
+			headers: {
+				"Content-Type": "application/json",
+			},
+		})
+
+		console.log("Session created:", response)
+
+		navigateTo(`/sessions/${response.id}`)
+	}
+	catch (error) {
+		console.error("Failed to create session:", error)
+	}
 }
 </script>
 

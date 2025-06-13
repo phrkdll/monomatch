@@ -35,7 +35,7 @@ func TestNew(t *testing.T) {
 			if err == nil {
 				assert.Equal(t, tc.player, p.Name)
 				assert.Equal(t, 0, p.Cards.Len())
-				assert.NotNil(t, p.ID.Inner)
+				assert.NotNil(t, p.Id.Inner)
 			}
 		})
 	}

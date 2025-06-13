@@ -17,7 +17,7 @@ func TestMakeSymbols(t *testing.T) {
 
 	var symbolIds []symbol.SymbolId
 	for _, r := range symbols {
-		symbolIds = append(symbolIds, r.ID)
+		symbolIds = append(symbolIds, r.Id)
 	}
 
 	assert.Len(t, slices.Compact(symbolIds), len(symbols))

@@ -17,6 +17,10 @@ type CreateSessionRequest struct {
 	Symbols     *[]string        `json:"symbols"`
 }
 
+type CreateSessionResponse struct {
+	Id session.SessionId `json:"id"`
+}
+
 func createSession(w http.ResponseWriter, r *http.Request) {
 	defer must.Recover()
 
@@ -28,7 +32,8 @@ func createSession(w http.ResponseWriter, r *http.Request) {
 
 	store.Instance().Add(session)
 
-	json := must.Return(json.Marshal(&session)).ElseRespond(w, http.StatusBadRequest)
+	response := CreateSessionResponse{Id: session.Id}
+	json := must.Return(json.Marshal(&response)).ElseRespond(w, http.StatusBadRequest)
 
 	utils.SendJSON(w, http.StatusOK, json)
 }

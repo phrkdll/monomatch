@@ -7,7 +7,7 @@ import "github.com/phrkdll/strongoid/pkg/strongoid"
 type PresetId strongoid.Id[string]
 
 type Preset struct {
-	ID          PresetId `json:"id"`
+	Id          PresetId `json:"id"`
 	DisplayName string   `json:"displayName"`
 	Description string   `json:"description"`
 }
