@@ -12,7 +12,7 @@ import (
 type CardId strongoid.Id[string]
 
 type Card struct {
-	ID      CardId          `json:"id"`
+	Id      CardId          `json:"id"`
 	Symbols []symbol.Symbol `json:"symbols"`
 }
 
@@ -31,7 +31,7 @@ func New(symbols []symbol.Symbol) (*Card, error) {
 	}
 
 	return &Card{
-		ID:      CardId{Inner: uuid.NewString()},
+		Id:      CardId{Inner: uuid.NewString()},
 		Symbols: symbols,
 	}, nil
 }

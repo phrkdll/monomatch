@@ -21,7 +21,7 @@ var (
 type SessionId strongoid.Id[string]
 
 type Session struct {
-	ID        SessionId              `json:"id"`
+	Id        SessionId              `json:"id"`
 	Name      string                 `json:"name"`
 	CreatedAt time.Time              `json:"createdAt"`
 	Cards     stack.Stack[card.Card] `json:"-"`
@@ -32,7 +32,7 @@ func New(name string, input []string) (*Session, error) {
 	symbols := gen.MakeSymbols(input)
 	cards, err := gen.GenerateCards(symbols)
 
-	stack := stack.New(cards)
+	stack := stack.New([]card.Card{})
 	rand.New(rand.NewSource(time.Now().UnixNano()))
 	indices := rand.Perm(len(cards))
 
@@ -52,7 +52,7 @@ func New(name string, input []string) (*Session, error) {
 	}
 
 	return &Session{
-		ID:        SessionId{Inner: uuid.New().String()},
+		Id:        SessionId{Inner: uuid.New().String()},
 		Name:      name,
 		CreatedAt: time.Now().UTC(),
 		Cards:     stack,

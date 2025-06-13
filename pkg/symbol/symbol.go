@@ -11,7 +11,7 @@ import (
 type SymbolId strongoid.Id[string]
 
 type Symbol struct {
-	ID   SymbolId `json:"id"`
+	Id   SymbolId `json:"id"`
 	Name string   `json:"name"`
 }
 
@@ -25,7 +25,7 @@ func New(name string) (*Symbol, error) {
 	}
 
 	return &Symbol{
-		ID:   SymbolId{Inner: uuid.NewString()},
+		Id:   SymbolId{Inner: uuid.NewString()},
 		Name: name,
 	}, nil
 }
