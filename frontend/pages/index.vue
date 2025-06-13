@@ -3,7 +3,7 @@ import type { Preset, PresetsResponse } from "~/types/presets"
 import { CreateSessionRequestSchema, CreateSessionResponseSchema, type CreateSessionResponse } from "~/types/session"
 import type { TypedResult } from "~/types/typed-result"
 
-const { data } = useLazyFetch<TypedResult<PresetsResponse>>("/api/presets")
+const { data: presetResponse } = useLazyFetch<TypedResult<PresetsResponse>>("/api/presets")
 
 const sessionName = ref<string>("")
 const selectedPreset = ref<Preset | undefined>(undefined)
@@ -24,7 +24,7 @@ async function onSubmit() {
 	}
 
 	try {
-		const response = await $fetch<TypedResult<CreateSessionResponse>>("/api/sessions/create", {
+		const response = await $fetch<TypedResult<CreateSessionResponse>>("/api/sessions", {
 			method: "POST",
 			body: request.data,
 			headers: {
@@ -32,7 +32,7 @@ async function onSubmit() {
 			},
 		})
 
-		const parsedResponse = CreateSessionResponseSchema.safeParse(response.val)
+		const parsedResponse = CreateSessionResponseSchema.safeParse(response.data)
 		if (parsedResponse.success) {
 			navigateTo(`/sessions/${parsedResponse.data.id}`)
 		}
@@ -69,7 +69,7 @@ async function onSubmit() {
 					Select a preset
 				</option>
 				<option
-					v-for="preset in data?.val?.presets"
+					v-for="preset in presetResponse?.data?.presets"
 					:key="preset.id"
 					:value="preset"
 				>
