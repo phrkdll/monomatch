@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import type { Preset, PresetsResponse } from "~/types/presets"
-// import type { CreateSessionResponse } from "~/types/session"
 import { CreateSessionRequestSchema, CreateSessionResponseSchema, type CreateSessionResponse } from "~/types/session"
 import type { TypedResult } from "~/types/typed-result"
 
-const { data } = useLazyFetch<PresetsResponse>("/api/presets")
+const { data } = useLazyFetch<TypedResult<PresetsResponse>>("/api/presets")
 
 const sessionName = ref<string>("")
 const selectedPreset = ref<Preset | undefined>(undefined)
@@ -17,14 +16,15 @@ async function onSubmit() {
 		symbols: selectedPreset.value?.id === "custom" && symbols.value ? JSON.parse(symbols.value || "[]") : undefined,
 	})
 
-	console.log("Session created:", request)
+	console.log("Parsed request:", request)
+
 	if (request.error) {
 		console.log(request.error.flatten())
 		return
 	}
 
 	try {
-		const response = await $fetch<TypedResult<CreateSessionResponse> | CreateSessionResponse>("/api/sessions/create", {
+		const response = await $fetch<TypedResult<CreateSessionResponse>>("/api/sessions/create", {
 			method: "POST",
 			body: request.data,
 			headers: {
@@ -32,8 +32,7 @@ async function onSubmit() {
 			},
 		})
 
-		console.log("Session created:", response)
-		const parsedResponse = CreateSessionResponseSchema.safeParse(response)
+		const parsedResponse = CreateSessionResponseSchema.safeParse(response.val)
 		if (parsedResponse.success) {
 			navigateTo(`/sessions/${parsedResponse.data.id}`)
 		}
@@ -70,7 +69,7 @@ async function onSubmit() {
 					Select a preset
 				</option>
 				<option
-					v-for="preset in data?.presets"
+					v-for="preset in data?.val?.presets"
 					:key="preset.id"
 					:value="preset"
 				>
@@ -80,8 +79,8 @@ async function onSubmit() {
 			<small v-if="selectedPreset">{{ selectedPreset.description }}</small>
 			<textarea
 				v-if="selectedPreset?.id === 'custom'"
+				v-model="symbols"
 				class="font-mono"
-
 				rows="5"
 				cols="50"
 			/>

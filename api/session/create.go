@@ -28,12 +28,18 @@ func createSession(w http.ResponseWriter, r *http.Request) {
 
 	must.Succeed(json.NewDecoder(r.Body).Decode(&request)).ElseRespond(w, http.StatusBadRequest)
 
-	session := must.Return(session.New(request.SessionName, *request.Symbols)).ElseRespond(w, http.StatusBadRequest)
+	var symbols []string
+	if request.Symbols != nil {
+		symbols = *request.Symbols
+	} else {
+		symbols = must.Return(preset.KnownPresets[*request.Preset].ToSymbols()).ElseRespond(w, http.StatusBadRequest)
+	}
+
+	session := must.Return(session.New(request.SessionName, symbols)).ElseRespond(w, http.StatusBadRequest)
 
 	store.Instance().Add(session)
 
-	response := CreateSessionResponse{Id: session.Id}
-	json := must.Return(json.Marshal(&response)).ElseRespond(w, http.StatusBadRequest)
+	createSessionResponse := CreateSessionResponse{Id: session.Id}
 
-	utils.SendJSON(w, http.StatusOK, json)
+	utils.SendJSON(w, http.StatusOK, createSessionResponse)
 }

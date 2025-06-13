@@ -26,7 +26,5 @@ func joinSession(w http.ResponseWriter, r *http.Request) {
 
 	p := must.Return(session.AddPlayer(request.PlayerName)).ElseRespond(w, http.StatusBadRequest)
 
-	json := must.Return(json.Marshal(&p)).ElseRespond(w, http.StatusBadRequest)
-
-	utils.SendJSON(w, http.StatusOK, json)
+	utils.SendJSON(w, http.StatusOK, p)
 }

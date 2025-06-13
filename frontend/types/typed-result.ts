@@ -1,4 +1,5 @@
 export interface TypedResult<T> {
-	ErrorMessage: string | null
-	Val: T
+	hasError: boolean
+	errorMessage: string | null
+	val: T
 }
