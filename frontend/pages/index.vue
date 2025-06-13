@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { Preset, PresetsResponse } from "~/types/presets"
-import type { CreateSessionResponse } from "~/types/session"
-import { CreateSessionRequestSchema } from "~/types/session"
+// import type { CreateSessionResponse } from "~/types/session"
+import { CreateSessionRequestSchema, CreateSessionResponseSchema, type CreateSessionResponse } from "~/types/session"
+import type { TypedResult } from "~/types/typed-result"
 
 const { data } = useLazyFetch<PresetsResponse>("/api/presets")
 
@@ -23,7 +24,7 @@ async function onSubmit() {
 	}
 
 	try {
-		const response = await $fetch<CreateSessionResponse>("/api/sessions/create", {
+		const response = await $fetch<TypedResult<CreateSessionResponse> | CreateSessionResponse>("/api/sessions/create", {
 			method: "POST",
 			body: request.data,
 			headers: {
@@ -32,8 +33,10 @@ async function onSubmit() {
 		})
 
 		console.log("Session created:", response)
-
-		navigateTo(`/sessions/${response.id}`)
+		const parsedResponse = CreateSessionResponseSchema.safeParse(response)
+		if (parsedResponse.success) {
+			navigateTo(`/sessions/${parsedResponse.data.id}`)
+		}
 	}
 	catch (error) {
 		console.error("Failed to create session:", error)

@@ -6,6 +6,17 @@ POST {{baseUrl}}/sessions/create
 Content-Type: application/json
 
 {
+    "sessionName": "test session",
+    "preset": "uuid",
+    "symbols": []
+}
+
+###
+
+POST {{baseUrl}}/sessions/create 
+Content-Type: application/json
+
+{
     "sessionName": "matching maggot",
     "symbols": [
         "Amon Amarth",
