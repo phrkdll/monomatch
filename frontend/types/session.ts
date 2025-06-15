@@ -26,5 +26,6 @@ export type AddPlayerRequest = z.infer<typeof AddPlayerRequestSchema>
 
 export const AddPlayerResponseSchema = z.object({
 	id: z.string(),
-	name: z.string() })
+	name: z.string(),
+})
 export type AddPlayerResponse = z.infer<typeof AddPlayerResponseSchema>

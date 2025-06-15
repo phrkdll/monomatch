@@ -9,5 +9,6 @@ func RegisterRoutes(mux *chi.Mux) {
 		r.Post("/", createSession)
 		r.Get("/{sessionId}", getSessionInfo)
 		r.Post("/{sessionId}/join", joinSession)
+		r.HandleFunc("/{sessionId}/ws", sessionSocket)
 	})
 }

@@ -11,7 +11,10 @@ require (
 	github.com/phrkdll/strongoid v0.8.5
 )
 
-require golang.org/x/text v0.26.0 // indirect
+require (
+	github.com/gorilla/websocket v1.5.3 // indirect
+	golang.org/x/text v0.26.0 // indirect
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
