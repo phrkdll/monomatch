@@ -34,7 +34,7 @@ func Test(t *testing.T) {
 
 			if err == nil {
 				assert.Equal(t, tc.symbol, s.Name)
-				assert.NotNil(t, s.ID.Inner)
+				assert.NotNil(t, s.Id.Inner)
 			}
 		})
 	}

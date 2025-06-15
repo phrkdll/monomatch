@@ -42,7 +42,7 @@ func TestNew(t *testing.T) {
 
 			if err == nil {
 				assert.Equal(t, tc.symbols, c.Symbols)
-				assert.NotNil(t, c.ID.Inner)
+				assert.NotNil(t, c.Id.Inner)
 			}
 		})
 	}
