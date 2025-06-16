@@ -5,7 +5,7 @@ import (
 )
 
 func RegisterRoutes(mux *chi.Mux) {
-	mux.Route("/presets", func(r chi.Router) {
+	mux.Route("/api/presets", func(r chi.Router) {
 		r.Get("/", listPresets)
 	})
 }

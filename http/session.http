@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:1982
+@baseUrl = http://localhost:1982/api
 
 ### Get session info
 

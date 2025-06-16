@@ -29,7 +29,7 @@ func TestNew(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			p, err := player.New(tc.player)
+			p, err := player.New(tc.player, nil)
 			assert.Equal(t, tc.err, err)
 
 			if err == nil {

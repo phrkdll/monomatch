@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/gorilla/websocket"
 	"github.com/phrkdll/monomatch/pkg/card"
 	"github.com/phrkdll/monomatch/pkg/gen"
 	"github.com/phrkdll/monomatch/pkg/player"
@@ -21,11 +22,11 @@ var (
 type SessionId strongoid.Id[string]
 
 type Session struct {
-	Id        SessionId              `json:"id"`
-	Name      string                 `json:"name"`
-	CreatedAt time.Time              `json:"createdAt"`
-	Cards     stack.Stack[card.Card] `json:"-"`
-	Players   []player.Player        `json:"-"`
+	Id        SessionId
+	Name      string
+	CreatedAt time.Time
+	Cards     stack.Stack[card.Card]
+	Players   []player.Player
 }
 
 func New(name string, input []string) (*Session, error) {
@@ -60,14 +61,14 @@ func New(name string, input []string) (*Session, error) {
 	}, nil
 }
 
-func (s *Session) AddPlayer(name string) (*player.Player, error) {
+func (s *Session) AddPlayer(name string, conn *websocket.Conn) (*player.Player, error) {
 	for _, p := range s.Players {
 		if p.Name == name {
 			return nil, ErrPlayerNameAlreadyTaken
 		}
 	}
 
-	player, err := player.New(name)
+	player, err := player.New(name, conn)
 	if err != nil {
 		return nil, err
 	}

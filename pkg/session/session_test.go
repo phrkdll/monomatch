@@ -71,7 +71,7 @@ func TestAddPlayer(t *testing.T) {
 	testSession, _ := session.New("test", testdata.SymbolNames)
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			player, err := testSession.AddPlayer(tc.playerName)
+			player, err := testSession.AddPlayer(tc.playerName, nil)
 			assert.Equal(t, tc.err, err)
 
 			if err == nil {

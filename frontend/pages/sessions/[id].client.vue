@@ -1,35 +1,33 @@
 <script setup lang="ts">
-import { AddPlayerRequestSchema, type AddPlayerResponse, type GetSessionInfo } from "~/types/session"
-import type { TypedResult } from "~/types/typed-result"
+import { AddPlayerRequest } from "~/types/session"
 
 const route = useRoute()
+const { apiHost, apiPort } = useRuntimeConfig().public
 const sessionId = route.params.id as string
 
-const { data: sessionResponse } = useLazyFetch<TypedResult<GetSessionInfo>>(`/api/sessions/${sessionId}`)
-// const { data, send } = useWebSocket(`/api/sessions/${sessionId}/ws`)
+const connecting = ref(true)
+
+const { send, data } = useWebSocket(`ws://${apiHost}:${apiPort}/ws/sessions?sessionId=${sessionId}`, {
+	onError: () => navigateTo("/"),
+	onConnected: () => connecting.value = false,
+})
 
 const playerName = ref<string>("")
 
 async function onSubmit() {
-	const request = AddPlayerRequestSchema.safeParse({ playerName: playerName.value })
+	const request = AddPlayerRequest.safeParse({ playerName: playerName.value })
 
-	const joinResponse = await $fetch<TypedResult<AddPlayerResponse>>(`/api/sessions/${sessionId}/join`, {
-		method: "POST",
-		body: request.data,
-		headers: {
-			"Accept": "application/json",
-			"Content-Type": "application/json",
-		},
-	})
-
-	console.log(joinResponse)
+	send(JSON.stringify(request))
 }
 </script>
 
 <template>
-	<form @submit.prevent="onSubmit">
+	<form
+		v-if="!connecting"
+		@submit.prevent="onSubmit"
+	>
 		<article>
-			<header>Session: {{ sessionResponse?.data?.name }}</header>
+			<header> {{ connecting ? "Connecting..." : `Session: ${data?.name}` }}</header>
 
 			<fieldset role="group">
 				<input
@@ -39,8 +37,12 @@ async function onSubmit() {
 				>
 				<button>Join</button>
 			</fieldset>
-			<footer>
-				<small>Created {{ $dayjs().to(sessionResponse?.data?.createdAt) }}</small>
+
+			<pre>
+				{{ data }}
+			</pre>
+			<footer class="flex justify-between">
+				<small>Created {{ $dayjs().to(data?.createdAt) }}</small>
 			</footer>
 		</article>
 	</form>

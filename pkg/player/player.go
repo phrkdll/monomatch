@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
+	"github.com/gorilla/websocket"
 	"github.com/phrkdll/monomatch/pkg/card"
 	"github.com/phrkdll/monomatch/pkg/stack"
 	"github.com/phrkdll/strongoid/pkg/strongoid"
@@ -17,12 +18,13 @@ var (
 type PlayerId strongoid.Id[string]
 
 type Player struct {
-	Id    PlayerId               `json:"id"`
-	Name  string                 `json:"name"`
-	Cards stack.Stack[card.Card] `json:"-"`
+	Id    PlayerId
+	Name  string
+	Cards stack.Stack[card.Card]
+	Conn  *websocket.Conn
 }
 
-func New(name string) (*Player, error) {
+func New(name string, conn *websocket.Conn) (*Player, error) {
 	if name == "" {
 		return nil, ErrPlayerNameRequired
 	}
@@ -31,5 +33,6 @@ func New(name string) (*Player, error) {
 		Id:    PlayerId{Inner: uuid.NewString()},
 		Name:  name,
 		Cards: stack.Stack[card.Card]{},
+		Conn:  conn,
 	}, nil
 }

@@ -12,7 +12,10 @@ export default defineNuxtConfig({
 	devtools: { enabled: true },
 	css: ["~/assets/css/main.css"],
 	runtimeConfig: {
-		apiUrl: "http://localhost:1982/",
+		public:	{
+			apiHost: "localhost",
+			apiPort: 1982,
+		},
 	},
 	compatibilityDate: "2025-05-15", vite: {
 		plugins: [

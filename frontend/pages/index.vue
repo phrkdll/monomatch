@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Preset, PresetsResponse } from "~/types/presets"
-import { CreateSessionRequestSchema, CreateSessionResponseSchema, type CreateSessionResponse } from "~/types/session"
+import { CreateSessionRequest, CreateSessionResponse } from "~/types/session"
 import type { TypedResult } from "~/types/typed-result"
 
 const { data: presetResponse } = useLazyFetch<TypedResult<PresetsResponse>>("/api/presets")
@@ -10,13 +10,11 @@ const selectedPreset = ref<Preset | undefined>(undefined)
 const symbols = ref("")
 
 async function onSubmit() {
-	const request = await CreateSessionRequestSchema.safeParseAsync({
+	const request = await CreateSessionRequest.safeParseAsync({
 		sessionName: sessionName.value,
 		preset: selectedPreset.value?.id,
 		symbols: selectedPreset.value?.id === "custom" && symbols.value ? JSON.parse(symbols.value || "[]") : undefined,
 	})
-
-	console.log("Parsed request:", request)
 
 	if (request.error) {
 		console.log(request.error.flatten())
@@ -32,7 +30,7 @@ async function onSubmit() {
 			},
 		})
 
-		const parsedResponse = CreateSessionResponseSchema.safeParse(response.data)
+		const parsedResponse = CreateSessionResponse.safeParse(response.data)
 		if (parsedResponse.success) {
 			navigateTo(`/sessions/${parsedResponse.data.id}`)
 		}

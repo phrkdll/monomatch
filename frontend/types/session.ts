@@ -1,31 +1,31 @@
 import z from "zod"
 
-export const CreateSessionRequestSchema = z.object({
+export const CreateSessionRequest = z.object({
 	sessionName: z.string().min(1, "Name is required"),
 	preset: z.string(),
 	symbols: z.array(z.string()).min(57, "At least 57 symbols are required").optional(),
 })
-export type CreateSessionRequest = z.infer<typeof CreateSessionRequestSchema>
+export type CreateSessionRequest = z.infer<typeof CreateSessionRequest>
 
-export const CreateSessionResponseSchema = z.object({
+export const CreateSessionResponse = z.object({
 	id: z.string(),
 })
-export type CreateSessionResponse = z.infer<typeof CreateSessionResponseSchema>
+export type CreateSessionResponse = z.infer<typeof CreateSessionResponse>
 
-export const GetSessionInfoSchema = z.object({
+export const GetSessionInfoResponse = z.object({
 	id: z.string(),
 	name: z.string(),
 	createdAt: z.date(),
 })
-export type GetSessionInfo = z.infer<typeof GetSessionInfoSchema>
+export type GetSessionInfoResponse = z.infer<typeof GetSessionInfoResponse>
 
-export const AddPlayerRequestSchema = z.object({
+export const AddPlayerRequest = z.object({
 	playerName: z.string().min(1, "Player name is required"),
 })
-export type AddPlayerRequest = z.infer<typeof AddPlayerRequestSchema>
+export type AddPlayerRequest = z.infer<typeof AddPlayerRequest>
 
-export const AddPlayerResponseSchema = z.object({
+export const AddPlayerResponse = z.object({
 	id: z.string(),
 	name: z.string(),
 })
-export type AddPlayerResponse = z.infer<typeof AddPlayerResponseSchema>
+export type AddPlayerResponse = z.infer<typeof AddPlayerResponse>
