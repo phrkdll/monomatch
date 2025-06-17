@@ -5,12 +5,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Attach to Air",
+            "name": "Launch Package",
             "type": "go",
-            "mode": "remote",
-            "request": "attach",
-            "host": "127.0.0.1",
-            "port": 2345,
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/api"
         }
     ]
 }

@@ -1,8 +1,32 @@
-@baseUrl = http://localhost:1982
+@baseUrl = http://localhost:1982/api
 
-###
+### Get session info
 
-POST {{baseUrl}}/session/create 
+GET {{baseUrl}}/sessions/3cad4e60-0534-4fb0-9a80-1472bac569c2
+Content-Type: application/json
+
+### Join session
+
+POST {{baseUrl}}/sessions/3cad4e60-0534-4fb0-9a80-1472bac569c2/join
+Content-Type: application/json
+
+{
+    "playerName": "phreakadelle"
+}
+
+### Create preset session
+
+POST {{baseUrl}}/sessions
+Content-Type: application/json
+
+{
+    "sessionName": "test session",
+    "preset": "uuid"
+}
+
+### Create custom session
+
+POST {{baseUrl}}/sessions
 Content-Type: application/json
 
 {
@@ -67,14 +91,4 @@ Content-Type: application/json
         "Venom",
         "Watain"
     ]
-}
-
-###
-
-POST {{baseUrl}}/session/join 
-Content-Type: application/json
-
-{
-    "id": "8aab1f1f-0e8b-4de0-a9de-4b936a903442",
-    "playerName": "phreakadelle"
 }

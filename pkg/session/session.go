@@ -6,14 +6,17 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/gorilla/websocket"
 	"github.com/phrkdll/monomatch/pkg/card"
 	"github.com/phrkdll/monomatch/pkg/gen"
 	"github.com/phrkdll/monomatch/pkg/player"
 	"github.com/phrkdll/monomatch/pkg/stack"
+	"github.com/phrkdll/must/pkg/must"
 	"github.com/phrkdll/strongoid/pkg/strongoid"
 )
 
 var (
+	ErrAlreadyJoinedSession   = errors.New("player already joined")
 	ErrPlayerNameAlreadyTaken = errors.New("player name already taken")
 )
 
@@ -21,18 +24,18 @@ var (
 type SessionId strongoid.Id[string]
 
 type Session struct {
-	ID        SessionId              `json:"id"`
-	Name      string                 `json:"name"`
-	CreatedAt time.Time              `json:"createdAt"`
-	Cards     stack.Stack[card.Card] `json:"-"`
-	Players   []player.Player        `json:"-"`
+	Id        SessionId
+	Name      string
+	CreatedAt time.Time
+	Cards     stack.Stack[card.Card]
+	Players   map[player.PlayerId]*player.Player
 }
 
 func New(name string, input []string) (*Session, error) {
 	symbols := gen.MakeSymbols(input)
 	cards, err := gen.GenerateCards(symbols)
 
-	stack := stack.New(cards)
+	stack := stack.New([]card.Card{})
 	rand.New(rand.NewSource(time.Now().UnixNano()))
 	indices := rand.Perm(len(cards))
 
@@ -52,27 +55,34 @@ func New(name string, input []string) (*Session, error) {
 	}
 
 	return &Session{
-		ID:        SessionId{Inner: uuid.New().String()},
+		Id:        SessionId{Inner: uuid.New().String()},
 		Name:      name,
 		CreatedAt: time.Now().UTC(),
 		Cards:     stack,
-		Players:   []player.Player{},
+		Players:   make(map[player.PlayerId]*player.Player),
 	}, nil
 }
 
-func (s *Session) AddPlayer(name string) (*player.Player, error) {
+func (s *Session) AddPlayer(id player.PlayerId, name string, conn *websocket.Conn) error {
 	for _, p := range s.Players {
+		if p.Id == id {
+			return ErrAlreadyJoinedSession
+		}
+
 		if p.Name == name {
-			return nil, ErrPlayerNameAlreadyTaken
+			return ErrPlayerNameAlreadyTaken
 		}
 	}
 
-	player, err := player.New(name)
+	player, err := player.New(id, name, conn)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	s.Players = append(s.Players, *player)
+	player.Cards.Push(*must.Return(s.Cards.Top()).ElsePanic())
+	s.Cards.Pop()
 
-	return player, nil
+	s.Players[player.Id] = player
+
+	return nil
 }

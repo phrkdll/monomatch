@@ -5,8 +5,11 @@ import (
 )
 
 func RegisterRoutes(mux *chi.Mux) {
-	mux.Route("/session", func(r chi.Router) {
-		r.Post("/create", createSession)
-		r.Post("/join", joinSession)
+	mux.Route("/api/sessions", func(r chi.Router) {
+		r.Post("/", createSession)
+	})
+
+	mux.Route("/ws/sessions", func(r chi.Router) {
+		r.HandleFunc("/", sessionSocket)
 	})
 }

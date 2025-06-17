@@ -4,14 +4,21 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/phrkdll/monomatch/internal/utils"
+	"github.com/phrkdll/monomatch/pkg/preset"
 	"github.com/phrkdll/monomatch/pkg/session"
 	"github.com/phrkdll/monomatch/pkg/session/store"
 	"github.com/phrkdll/must/pkg/must"
 )
 
 type CreateSessionRequest struct {
-	SessionName string   `json:"sessionName"`
-	Symbols     []string `json:"symbols"`
+	SessionName string           `json:"sessionName"`
+	Preset      *preset.PresetId `json:"preset"`
+	Symbols     *[]string        `json:"symbols"`
+}
+
+type CreateSessionResponse struct {
+	Id session.SessionId `json:"id"`
 }
 
 func createSession(w http.ResponseWriter, r *http.Request) {
@@ -21,12 +28,18 @@ func createSession(w http.ResponseWriter, r *http.Request) {
 
 	must.Succeed(json.NewDecoder(r.Body).Decode(&request)).ElseRespond(w, http.StatusBadRequest)
 
-	session := must.Return(session.New(request.SessionName, request.Symbols)).ElseRespond(w, http.StatusBadRequest)
+	var symbols []string
+	if request.Symbols != nil {
+		symbols = *request.Symbols
+	} else {
+		symbols = must.Return(preset.KnownPresets[*request.Preset].ToSymbols()).ElseRespond(w, http.StatusBadRequest)
+	}
+
+	session := must.Return(session.New(request.SessionName, symbols)).ElseRespond(w, http.StatusBadRequest)
 
 	store.Instance().Add(session)
 
-	json := must.Return(json.Marshal(&session)).ElseRespond(w, http.StatusBadRequest)
+	createSessionResponse := CreateSessionResponse{Id: session.Id}
 
-	w.WriteHeader(http.StatusOK)
-	w.Write(json)
+	utils.SendJSON(w, http.StatusOK, createSessionResponse)
 }

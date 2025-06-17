@@ -1,30 +1,29 @@
 package main
 
 import (
-	"fmt"
+	"log/slog"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/phrkdll/monomatch/api/preset"
 	"github.com/phrkdll/monomatch/api/session"
 )
 
 func main() {
 	host := "localhost:1982"
 
-	fmt.Printf("[MMA] Starting\n")
-
 	// initDatabase()
 	r := initChi()
 
-	fmt.Printf("[MMA] Listening on %s\n", host)
+	slog.Info("server is listening", "on", host)
 
 	panic(http.ListenAndServe(host, r))
 }
 
 func initChi() *chi.Mux {
-	fmt.Printf("[MMA] Setting up routes\n")
+	slog.Info("setting up routes")
 
 	r := chi.NewRouter()
 
@@ -49,4 +48,5 @@ func initChi() *chi.Mux {
 
 func registerRoutes(mux *chi.Mux) {
 	session.RegisterRoutes(mux)
+	preset.RegisterRoutes(mux)
 }

@@ -3,6 +3,7 @@ package session_test
 import (
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/phrkdll/monomatch/internal/testdata"
 	"github.com/phrkdll/monomatch/pkg/gen"
 	"github.com/phrkdll/monomatch/pkg/player"
@@ -46,6 +47,7 @@ func TestNew(t *testing.T) {
 func TestAddPlayer(t *testing.T) {
 	type testCase struct {
 		name       string
+		playerId   player.PlayerId
 		playerName string
 		err        error
 	}
@@ -53,16 +55,19 @@ func TestAddPlayer(t *testing.T) {
 	testCases := []testCase{
 		{
 			name:       "add succeeds",
+			playerId:   player.PlayerId{Inner: uuid.NewString()},
 			playerName: "test",
 			err:        nil,
 		},
 		{
 			name:       "add fails",
+			playerId:   player.PlayerId{Inner: uuid.NewString()},
 			playerName: "test",
 			err:        session.ErrPlayerNameAlreadyTaken,
 		},
 		{
 			name:       "add fails",
+			playerId:   player.PlayerId{Inner: uuid.NewString()},
 			playerName: "",
 			err:        player.ErrPlayerNameRequired,
 		},
@@ -71,12 +76,8 @@ func TestAddPlayer(t *testing.T) {
 	testSession, _ := session.New("test", testdata.SymbolNames)
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			player, err := testSession.AddPlayer(tc.playerName)
+			err := testSession.AddPlayer(tc.playerId, tc.playerName, nil)
 			assert.Equal(t, tc.err, err)
-
-			if err == nil {
-				assert.Equal(t, tc.playerName, player.Name)
-			}
 		})
 	}
 }
