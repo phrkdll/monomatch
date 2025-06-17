@@ -22,6 +22,7 @@ type Player struct {
 	Name  string
 	Cards stack.Stack[card.Card]
 	Conn  *websocket.Conn
+	Ready bool
 }
 
 func New(id PlayerId, name string, conn *websocket.Conn) (*Player, error) {

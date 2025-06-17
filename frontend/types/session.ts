@@ -31,3 +31,10 @@ export const AddPlayerResponse = z.object({
 	name: z.string(),
 })
 export type AddPlayerResponse = z.infer<typeof AddPlayerResponse>
+
+export const PlayerReadyRequest = z.object({
+	messageType: z.string().default("player-ready"),
+	id: z.string().uuid(),
+	ready: z.boolean(),
+})
+export type PlayerReadyRequest = z.infer<typeof PlayerReadyRequest>

@@ -32,7 +32,7 @@ func (ss *SessionStore) Add(s *session.Session) error {
 	}
 
 	ss.sessions[s.Id] = s
-	slog.Info("session added", "count", len(ss.sessions))
+	slog.Info("session created", "id", s.Id, "name", s.Name)
 
 	return nil
 }

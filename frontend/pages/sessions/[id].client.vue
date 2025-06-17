@@ -1,23 +1,35 @@
 <script setup lang="ts">
-import { AddPlayerRequest } from "~/types/session"
+import { AddPlayerRequest, PlayerReadyRequest } from "~/types/session"
 import type { SessionStateResponse } from "~/types/session-state"
 
 const route = useRoute()
-const playerId = usePlayerId()
+const playerId = await usePlayerId().get()
 const { apiHost, apiPort } = useRuntimeConfig().public
 const sessionId = route.params.id as string
+const data = ref<SessionStateResponse>()
+const localPlayer = computed(() => data.value?.players?.find(p => p.id === playerId))
 
-const connecting = ref(true)
-
-const { send, data, status } = useWebSocket<SessionStateResponse>(`ws://${apiHost}:${apiPort}/ws/sessions?sessionId=${sessionId}`, {
+const { send, close } = useWebSocket(`ws://${apiHost}:${apiPort}/ws/sessions?sessionId=${sessionId}`, {
+	autoReconnect: true,
+	autoClose: false,
 	onError: () => navigateTo("/"),
-	onConnected: () => connecting.value = false,
+	onMessage: (_, event: MessageEvent<string>) => data.value = JSON.parse(event.data),
 })
 
 const playerName = ref<string>("")
 
+onUnmounted(() => close())
+
 async function onSubmit() {
-	const request = AddPlayerRequest.safeParse({ id: await playerId.get(), name: playerName.value })
+	const request = AddPlayerRequest.safeParse({ id: playerId, name: playerName.value })
+
+	if (request.success) {
+		send(JSON.stringify(request.data))
+	}
+}
+
+async function onPlayerReady() {
+	const request = PlayerReadyRequest.safeParse({ id: playerId, ready: !localPlayer.value?.ready })
 
 	if (request.success) {
 		send(JSON.stringify(request.data))
@@ -26,27 +38,66 @@ async function onSubmit() {
 </script>
 
 <template>
-	<form
-		v-if="!connecting"
-		@submit.prevent="onSubmit"
-	>
+	<div>
 		<article>
 			<header>Session: {{ data?.name }}</header>
 
-			<fieldset role="group">
-				<input
-					v-model="playerName"
-					type="text"
-					placeholder="Player name"
-				>
-				<button>Join</button>
-			</fieldset>
+			<form
+				v-if="!localPlayer"
+				@submit.prevent="onSubmit"
+			>
+				<fieldset role="group">
+					<input
+						v-model="playerName"
+						type="text"
+						placeholder="Player name"
+					>
+					<button>Join</button>
+				</fieldset>
+			</form>
 
-			<pre>{{ JSON.stringify(data, undefined, 2) }}</pre>
-			<footer class="flex justify-between">
-				<small>Created {{ $dayjs().to(data?.createdAt) }}</small>
-				<small>Connection: {{ status }}</small>
+			<table v-if="localPlayer">
+				<thead>
+					<tr>
+						<td>Name</td>
+						<td>Ready?</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr
+						v-for="p in data?.players"
+						:key="p.id"
+					>
+						<td>{{ p.playerName }} <small v-if="playerId === p.id">(you)</small></td>
+						<td class="!items-center">
+							<Icon
+								v-if="p.ready"
+								name="mynaui:check-solid"
+							/>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<footer class="flex justify-between items-center">
+				<button
+					v-if="localPlayer"
+					:class="localPlayer.ready ? 'secondary' : ''"
+					class="w-full"
+					@click="onPlayerReady"
+				>
+					{{ localPlayer.ready ? "Cancel" : "Ready" }}
+				</button>
 			</footer>
 		</article>
-	</form>
+		<!-- <pre>{{ JSON.stringify(data, undefined, 2) }}</pre> -->
+
+		<AppSymbolCard
+			v-if="localPlayer?.ready"
+			:symbols="localPlayer.topMostCard.symbols"
+			:clickable="true"
+			class="mx-auto"
+			@symbol-click="console.log"
+		/>
+	</div>
 </template>

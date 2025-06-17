@@ -28,7 +28,7 @@ type Session struct {
 	Name      string
 	CreatedAt time.Time
 	Cards     stack.Stack[card.Card]
-	Players   []player.Player
+	Players   map[player.PlayerId]*player.Player
 }
 
 func New(name string, input []string) (*Session, error) {
@@ -59,7 +59,7 @@ func New(name string, input []string) (*Session, error) {
 		Name:      name,
 		CreatedAt: time.Now().UTC(),
 		Cards:     stack,
-		Players:   []player.Player{},
+		Players:   make(map[player.PlayerId]*player.Player),
 	}, nil
 }
 
@@ -82,7 +82,7 @@ func (s *Session) AddPlayer(id player.PlayerId, name string, conn *websocket.Con
 	player.Cards.Push(*must.Return(s.Cards.Top()).ElsePanic())
 	s.Cards.Pop()
 
-	s.Players = append(s.Players, *player)
+	s.Players[player.Id] = player
 
 	return nil
 }

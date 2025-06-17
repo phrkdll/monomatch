@@ -8,9 +8,11 @@ export type SessionStateResponse = {
 }
 
 export type Player = {
+	id: string
 	playerName: string
 	topMostCard: Card
 	cardCount: number
+	ready: boolean
 }
 
 export type Card = {

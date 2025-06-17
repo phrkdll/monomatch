@@ -31,7 +31,7 @@ func sessionSocket(w http.ResponseWriter, r *http.Request) {
 	// connection
 	conn := must.Return(upgrader.Upgrade(w, r, nil)).ElseRespond(w, http.StatusBadRequest)
 
-	sendSessionState(w, conn, s)
+	sendSessionState(w, []*websocket.Conn{conn}, s)
 
 	// listen indefinitely for new messages coming
 	// through on our WebSocket connection
@@ -54,35 +54,70 @@ func sessionSocket(w http.ResponseWriter, r *http.Request) {
 			if err := s.AddPlayer(r.Id, r.Name, conn); err != nil {
 				continue
 			}
+		case "player-ready":
+			var r PlayerReadyRequest
+			must.Succeed(json.Unmarshal(jsonString, &r))
+			s.Players[r.Id].Ready = r.Ready
 		}
 
 		// print out that message for clarity
 		slog.Info("message received", "message", message)
-		sendSessionState(w, conn, s)
+
+		var conns []*websocket.Conn
+		for _, player := range s.Players {
+			conns = append(conns, player.Conn)
+		}
+
+		sendSessionState(w, conns, s)
 	}
 }
 
-func sendSessionState(w http.ResponseWriter, conn *websocket.Conn, s *session.Session) {
+func sendSessionState(w http.ResponseWriter, conns []*websocket.Conn, s *session.Session) {
+	var allReady bool
+	for _, player := range s.Players {
+		allReady = player.Ready
+		if allReady == false {
+			break
+		}
+	}
+
 	state := session.SessionState{
 		Id:             s.Id,
 		Name:           s.Name,
 		CreatedAt:      s.CreatedAt,
-		TopMostCard:    must.Return(s.Cards.Top()).ElsePanic(),
+		TopMostCard:    valueOrNil(allReady, must.Return(s.Cards.Top()).ElsePanic()),
 		RemainingCards: s.Cards.Len(),
 	}
 
 	for _, p := range s.Players {
 		state.Players = append(state.Players, player.PlayerState{
+			Id:          p.Id,
 			PlayerName:  p.Name,
-			TopMostCard: must.Return(p.Cards.Top()).ElsePanic(),
+			TopMostCard: valueOrNil(allReady, must.Return(p.Cards.Top()).ElsePanic()),
 			CardCount:   p.Cards.Len(),
+			Ready:       p.Ready,
 		})
 	}
 
-	must.Succeed(conn.WriteJSON(&state)).ElseRespond(w, http.StatusBadRequest)
+	for _, conn := range conns {
+		must.Succeed(conn.WriteJSON(&state)).ElseRespond(w, http.StatusBadRequest)
+	}
+}
+
+func valueOrNil[T any](predicate bool, value T) (ret T) {
+	if predicate {
+		ret = value
+		return
+	}
+	return
 }
 
 type AddPlayerRequest struct {
 	Id   player.PlayerId `json:"id"`
-	Name string          `json:"Name"`
+	Name string          `json:"name"`
+}
+
+type PlayerReadyRequest struct {
+	Id    player.PlayerId `json:"id"`
+	Ready bool            `json:"ready"`
 }
