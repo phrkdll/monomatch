@@ -33,7 +33,7 @@ func TestNew(t *testing.T) {
 			name:     "no id",
 			playerId: player.PlayerId{},
 			player:   "bork",
-			err:      player.ErrPlayerNameRequired,
+			err:      player.ErrIdIsRequired,
 		},
 	}
 

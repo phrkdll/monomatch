@@ -10,6 +10,7 @@ import (
 )
 
 var (
+	ErrIdIsRequired       = errors.New("a player id is required")
 	ErrPlayerNameRequired = errors.New("a player name is required")
 )
 
@@ -24,6 +25,10 @@ type Player struct {
 }
 
 func New(id PlayerId, name string, conn *websocket.Conn) (*Player, error) {
+	if id.Inner == "" {
+		return nil, ErrIdIsRequired
+	}
+
 	if name == "" {
 		return nil, ErrPlayerNameRequired
 	}
