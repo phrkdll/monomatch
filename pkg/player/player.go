@@ -3,7 +3,6 @@ package player
 import (
 	"errors"
 
-	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/phrkdll/monomatch/pkg/card"
 	"github.com/phrkdll/monomatch/pkg/stack"
@@ -24,13 +23,13 @@ type Player struct {
 	Conn  *websocket.Conn
 }
 
-func New(name string, conn *websocket.Conn) (*Player, error) {
+func New(id PlayerId, name string, conn *websocket.Conn) (*Player, error) {
 	if name == "" {
 		return nil, ErrPlayerNameRequired
 	}
 
 	return &Player{
-		Id:    PlayerId{Inner: uuid.NewString()},
+		Id:    id,
 		Name:  name,
 		Cards: stack.Stack[card.Card]{},
 		Conn:  conn,

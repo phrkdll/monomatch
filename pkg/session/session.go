@@ -11,10 +11,12 @@ import (
 	"github.com/phrkdll/monomatch/pkg/gen"
 	"github.com/phrkdll/monomatch/pkg/player"
 	"github.com/phrkdll/monomatch/pkg/stack"
+	"github.com/phrkdll/must/pkg/must"
 	"github.com/phrkdll/strongoid/pkg/strongoid"
 )
 
 var (
+	ErrAlreadyJoinedSession   = errors.New("player already joined")
 	ErrPlayerNameAlreadyTaken = errors.New("player name already taken")
 )
 
@@ -61,19 +63,26 @@ func New(name string, input []string) (*Session, error) {
 	}, nil
 }
 
-func (s *Session) AddPlayer(name string, conn *websocket.Conn) (*player.Player, error) {
+func (s *Session) AddPlayer(id player.PlayerId, name string, conn *websocket.Conn) error {
 	for _, p := range s.Players {
+		if p.Id == id {
+			return ErrAlreadyJoinedSession
+		}
+
 		if p.Name == name {
-			return nil, ErrPlayerNameAlreadyTaken
+			return ErrPlayerNameAlreadyTaken
 		}
 	}
 
-	player, err := player.New(name, conn)
+	player, err := player.New(id, name, conn)
 	if err != nil {
-		return nil, err
+		return err
 	}
+
+	player.Cards.Push(*must.Return(s.Cards.Top()).ElsePanic())
+	s.Cards.Pop()
 
 	s.Players = append(s.Players, *player)
 
-	return player, nil
+	return nil
 }

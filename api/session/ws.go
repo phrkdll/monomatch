@@ -1,6 +1,7 @@
 package session
 
 import (
+	"encoding/json"
 	"log/slog"
 	"net/http"
 
@@ -30,24 +31,58 @@ func sessionSocket(w http.ResponseWriter, r *http.Request) {
 	// connection
 	conn := must.Return(upgrader.Upgrade(w, r, nil)).ElseRespond(w, http.StatusBadRequest)
 
+	sendSessionState(w, conn, s)
+
 	// listen indefinitely for new messages coming
 	// through on our WebSocket connection
 	for {
 		// read in a message
-		var message any
+		var message map[string]any
 		must.Succeed(conn.ReadJSON(&message)).ElseRespond(w, http.StatusBadRequest)
+
+		jsonString := must.Return(json.Marshal(&message)).ElseRespond(w, http.StatusBadRequest)
+
+		mt, ok := message["messageType"].(string)
+		if !ok {
+			break
+		}
+
+		switch mt {
+		case "add-player":
+			var r AddPlayerRequest
+			must.Succeed(json.Unmarshal(jsonString, &r))
+			if err := s.AddPlayer(r.Id, r.Name, conn); err != nil {
+				continue
+			}
+		}
 
 		// print out that message for clarity
 		slog.Info("message received", "message", message)
-		state := session.SessionState{
-			Id:             s.Id,
-			Name:           s.Name,
-			CreatedAt:      s.CreatedAt,
-			TopMostCard:    must.Return(s.Cards.Top()).ElsePanic(),
-			RemainingCards: s.Cards.Len(),
-			Players:        []player.PlayerState{},
-		}
-
-		must.Succeed(conn.WriteJSON(&state)).ElseRespond(w, http.StatusBadRequest)
+		sendSessionState(w, conn, s)
 	}
+}
+
+func sendSessionState(w http.ResponseWriter, conn *websocket.Conn, s *session.Session) {
+	state := session.SessionState{
+		Id:             s.Id,
+		Name:           s.Name,
+		CreatedAt:      s.CreatedAt,
+		TopMostCard:    must.Return(s.Cards.Top()).ElsePanic(),
+		RemainingCards: s.Cards.Len(),
+	}
+
+	for _, p := range s.Players {
+		state.Players = append(state.Players, player.PlayerState{
+			PlayerName:  p.Name,
+			TopMostCard: must.Return(p.Cards.Top()).ElsePanic(),
+			CardCount:   p.Cards.Len(),
+		})
+	}
+
+	must.Succeed(conn.WriteJSON(&state)).ElseRespond(w, http.StatusBadRequest)
+}
+
+type AddPlayerRequest struct {
+	Id   player.PlayerId `json:"id"`
+	Name string          `json:"Name"`
 }

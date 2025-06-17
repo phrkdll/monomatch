@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { AddPlayerRequest } from "~/types/session"
+import type { SessionStateResponse } from "~/types/session-state"
 
 const route = useRoute()
+const playerId = usePlayerId()
 const { apiHost, apiPort } = useRuntimeConfig().public
 const sessionId = route.params.id as string
 
 const connecting = ref(true)
 
-const { send, data } = useWebSocket(`ws://${apiHost}:${apiPort}/ws/sessions?sessionId=${sessionId}`, {
+const { send, data, status } = useWebSocket<SessionStateResponse>(`ws://${apiHost}:${apiPort}/ws/sessions?sessionId=${sessionId}`, {
 	onError: () => navigateTo("/"),
 	onConnected: () => connecting.value = false,
 })
@@ -15,9 +17,11 @@ const { send, data } = useWebSocket(`ws://${apiHost}:${apiPort}/ws/sessions?sess
 const playerName = ref<string>("")
 
 async function onSubmit() {
-	const request = AddPlayerRequest.safeParse({ playerName: playerName.value })
+	const request = AddPlayerRequest.safeParse({ id: await playerId.get(), name: playerName.value })
 
-	send(JSON.stringify(request))
+	if (request.success) {
+		send(JSON.stringify(request.data))
+	}
 }
 </script>
 
@@ -27,7 +31,7 @@ async function onSubmit() {
 		@submit.prevent="onSubmit"
 	>
 		<article>
-			<header> {{ connecting ? "Connecting..." : `Session: ${data?.name}` }}</header>
+			<header>Session: {{ data?.name }}</header>
 
 			<fieldset role="group">
 				<input
@@ -38,11 +42,10 @@ async function onSubmit() {
 				<button>Join</button>
 			</fieldset>
 
-			<pre>
-				{{ data }}
-			</pre>
+			<pre>{{ JSON.stringify(data, undefined, 2) }}</pre>
 			<footer class="flex justify-between">
 				<small>Created {{ $dayjs().to(data?.createdAt) }}</small>
+				<small>Connection: {{ status }}</small>
 			</footer>
 		</article>
 	</form>

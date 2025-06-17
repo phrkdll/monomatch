@@ -20,7 +20,9 @@ export const GetSessionInfoResponse = z.object({
 export type GetSessionInfoResponse = z.infer<typeof GetSessionInfoResponse>
 
 export const AddPlayerRequest = z.object({
-	playerName: z.string().min(1, "Player name is required"),
+	messageType: z.string().default("add-player"),
+	id: z.string().uuid(),
+	name: z.string().min(1, "Player name is required"),
 })
 export type AddPlayerRequest = z.infer<typeof AddPlayerRequest>
 
